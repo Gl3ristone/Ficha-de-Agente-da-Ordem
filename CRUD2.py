@@ -92,17 +92,43 @@ def editar(ordem):
         if agente['id'] == buscavel:
             print(f"ID: {agente['id']}, Nome: {agente['nome']}, Origem: {agente['origem']}, "
                   f"Classe: {agente['classe']}, Trilha: {agente['trilha']}, Nex: {agente['nex']}%")
-            
-            editor = {
-                'id': input('Novo ID do agente: '),
+
+            novos_dados = {
                 'nome': input('Novo nome do agente: '),
                 'origem': input('Nova origem: '),
-                'classe': input('Nova classe: '),
+                'classe': input('Nova classe: ').capitalize(),
                 'trilha': input('Nova trilha da classe: '),
                 'nex': int(input('Novo nível de exposição: '))
             }
+            agente.update(novos_dados)
 
-            agente.update(editor)
+            print("Digite os novos atributos:")
+            novos_atributos = {}
+            for atr in agente['atributos']:
+                novos_atributos[atr] = int(input(f"{atr.capitalize()}: "))
+            agente['atributos'].update(novos_atributos)
+
+            vigor = agente['atributos']['vigor']
+            presenca = agente['atributos']['presenca']
+            nex = agente['nex']
+
+            classe = agente['classe']
+            if classe == 'Combatente':
+                agente['pv'] = 20 + vigor + (4*((nex-5)//5) + vigor)
+                agente['pe'] = 2 + presenca + (2*((nex-5)//5) + presenca)
+                agente['sanidade'] = 12 + (3*((nex-5)//5))
+            elif classe == 'Especialista':
+                agente['pv'] = 16 + vigor + (3*((nex-5)//5) + vigor)
+                agente['pe'] = 3 + presenca + (3*((nex-5)//5) + presenca)
+                agente['sanidade'] = 16 + (4*((nex-5)//5))
+            elif classe == 'Ocultista':
+                agente['pv'] = 12 + vigor + (2*((nex-5)//5) + vigor)
+                agente['pe'] = 4 + presenca + (4*((nex-5)//5) + presenca)
+                agente['sanidade'] = 20 + (5*((nex-5)//5))
+            else:
+                print("Classe inválida! Valores não atualizados.")
+
+            print("Ficha atualizada com sucesso.")
             return
     print(f'Nenhum agente com ID: {buscavel} encontrado')
 def excluir(ordem):
@@ -227,4 +253,5 @@ def inicio():
         else: print('Opção Invalida')
 inicio()            
     
+
     
